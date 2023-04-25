@@ -1,7 +1,7 @@
 # Проект «Большое путешествие»
 
-* Студент: [Polina Emelyanova](https://up.htmlacademy.ru/ecmascript/20/user/55620).
-* Наставник: `Неизвестно`.
+- Студент: [Polina Emelyanova](https://up.htmlacademy.ru/ecmascript/20/user/55620).
+- Наставник: [Олег Глущенко](https://htmlacademy.ru/profile/id305355).
 
 ---
 
