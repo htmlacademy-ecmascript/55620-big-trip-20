@@ -11,12 +11,12 @@ const createEventList = (arr, type) => arr.map((item) => `<div class="event__typ
   <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-1">${item.type}</label>
 </div>`).join('');
 
-const createOfferSelectors = (arr, base, type) => arr.map((item) => {
+const createOfferSelectors = (arr, base, type, pointID) => arr.map((item) => {
   const isChecked = base.includes(+item.id) ? 'checked' : '';
   // console.log(item.id)
   return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
-              <label class="event__offer-label" for="event-offer-${type}-${item.id}">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
+              <label class="event__offer-label" for="event-offer-${pointID}-${item.id}">
                 <span class="event__offer-title">${item.title}</span>
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${item.price}</span>
@@ -26,10 +26,10 @@ const createOfferSelectors = (arr, base, type) => arr.map((item) => {
 
 function createEditItemForm(point, destinations, offers) {
   // const { basePrice, dateFrom, dateTo, isFavorite, destination, offers: eventOffers, type } = point;
-  const { offers: eventOffers, type } = point;
+  const {id: pointID, offers: eventOffers, type } = point;
 
   const pointDestination = destinations.find((item) => point.destination === item.id);
-  const { description, pictures } = pointDestination;
+  const {description, pictures } = pointDestination;
   // const { id, description, name, pictures } = pointDestination;
 
   const createEventFotoList = createImgList(pictures);
@@ -37,7 +37,7 @@ function createEditItemForm(point, destinations, offers) {
   const createEventTypeList = createEventList(offers, type);
   const currentOffer = offers.find((item) => item.type === type);
   const { type: curentOfferType, offers: currentOfferArr } = currentOffer;
-  const createOffersSelectorList = createOfferSelectors(currentOfferArr, eventOffers, curentOfferType);
+  const createOffersSelectorList = createOfferSelectors(currentOfferArr, eventOffers, curentOfferType, pointID);
 
   return `
   <li class="trip-events__item">

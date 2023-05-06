@@ -1,4 +1,4 @@
-// Allowed: ┃bus┃train┃ship┃drive┃flight┃check-in┃sightseeing┃restaurant
+
 import { getRandomInt } from './utils';
 
 const mockPoints = [
@@ -181,7 +181,27 @@ const mockOffers = [
         'price': getRandomInt(100, 250)
       },
     ]
+  },
+  {
+    'type': 'ship',
+    'offers': []
+  },{
+    'type': 'train',
+    'offers': []
   }
+  ,{
+    'type': 'drive',
+    'offers': []
+  }
+  ,{
+    'type': 'check-in',
+    'offers': []
+  }
+  ,{
+    'type': 'restaurant',
+    'offers': []
+  },
+
 ];
 
 export { mockPoints, mockDestinations, mockOffers };
