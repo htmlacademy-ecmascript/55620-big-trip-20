@@ -1,4 +1,4 @@
-import {RenderPosition, render } from './render';
+import { RenderPosition, render } from './framework/render';
 import TripInfo from './view/trip-info';
 import FilterMenu from './view/filteres';
 import SortMenu from './view/sorting';

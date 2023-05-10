@@ -1,4 +1,4 @@
-import {render } from '../render';
+import {render, replace, remove} from '../framework/render';
 
 //ul
 import EventsList from '../view/events-list';
@@ -9,23 +9,36 @@ import EditItemForm from '../view/edit-item';
 
 
 export default class AppPresenter {
-  appComponent = new EventsList();
-  itemComponent = new EventsItem();
+  // #appComponent = null;
+  // #itemComponent = null;
+  #appWrapper = null;
+  #pointsModel = null;
+  #appComponent = new EventsList();
+  #itemComponent = new EventsItem();
+
   constructor({ appWrapper, pointModel }) {
-    this.appWrapper = appWrapper;
-    this.pointsModel = pointModel;
+    this.#appWrapper = appWrapper;
+    this.#pointsModel = pointModel;
   }
+
 
   init() {
-    const points = [...this.pointsModel.getPoints()];
-    const destinations = this.pointsModel.getDestinations();
-    const offers = this.pointsModel.getOffers();
+    const points = [...this.#pointsModel.getPoints()];
+    const destinations = this.#pointsModel.getDestinations();
+    const offers = this.#pointsModel.getOffers();
     // console.log(offers)
-    render(this.appComponent, this.appWrapper);
-    render(new EditItemForm(points[0], destinations, offers), this.appComponent.getElement());
+    render(this.#appComponent, this.#appWrapper);
+    // render(new EditItemForm(points[0], destinations, offers), this.#appComponent.element);
 
-    for (let i = 1; i < points.length; i++){
-      render(new EventsItem(points[i], destinations, offers), this.appComponent.getElement());
+    for (let i = 0; i < points.length; i++){
+      this.#renderPoints(points[i], destinations, offers);
+      // render(new EventsItem(points[i], destinations, offers), this.#appComponent.element);
     }
   }
+
+  #renderPoints(point, destinations, offers) {
+    const itemComponent = new EventsItem(point, destinations, offers);
+    render(itemComponent, this.#appComponent.element);
+  }
+
 }

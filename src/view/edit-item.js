@@ -1,4 +1,5 @@
-import { createElement } from '../render';
+// import { createElement } from '../render';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createImgList = (arr) => arr.map((item) => `
   <img class="event__photo" src="${item.src}" alt="${item.description}">
@@ -114,26 +115,30 @@ function createEditItemForm(point, destinations, offers) {
   </li>`;
 }
 
-export default class EditItemForm {
+export default class EditItemForm extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
   constructor(point, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createEditItemForm(this.point, this.destinations, this.offers);
+  get template() {
+    return createEditItemForm(this.#point, this.#destinations, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  // getElement() {
+  //   if (!this.element) {
+  //     this.element = createElement(this.getTemplate());
+  //   }
 
-    return this.element;
-  }
+  //   return this.element;
+  // }
 
-  removeElement() {
-    this.element = null;
-  }
+  // removeElement() {
+  //   this.element = null;
+  // }
 }

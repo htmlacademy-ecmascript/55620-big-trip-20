@@ -1,6 +1,8 @@
+import AbstractView from '../framework/view/abstract-view.js';
+
 import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils';
 
-import { createElement } from '../render';
+// import { createElement } from '../render';
 const createOffersList = (arr) => arr.map((item) => `<li class="event__offer">
           <span class="event__offer-title">${item.title}</span>
           +€&nbsp;
@@ -55,26 +57,30 @@ function createEventsItem(point, destinations, offers) {
     </div>
   </li>`;
 }
-export default class EventsItem {
+export default class EventsItem extends AbstractView {
+  #point = null;
+  #destinations = null;
+  #offers = null;
   constructor(point, destinations, offers) {
-    this.point = point;
-    this.destinations = destinations;
-    this.offers = offers;
+    super();
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
   }
 
-  getTemplate() {
-    return createEventsItem(this.point, this.destinations, this.offers);
+  get template() {
+    return createEventsItem(this.#point, this.#destinations, this.#offers);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
-    }
+  // getElement() {
+  //   if (!this.element) {
+  //     this.element = createElement(this.getTemplate());
+  //   }
 
-    return this.element;
-  }
+  //   return this.element;
+  // }
 
-  removeElement() {
-    this.element = null;
-  }
+  // removeElement() {
+  //   this.element = null;
+  // }
 }
