@@ -1,5 +1,4 @@
 import AbstractView from '../framework/view/abstract-view';
-// import { extend } from "dayjs";
 
 function createFilterMenu() {
   return `<form class="trip-filters" action = "#" method = "get" >
@@ -24,15 +23,4 @@ export default class FilterMenu extends AbstractView {
     return createFilterMenu();
   }
 
-  // getElement() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.getTemplate());
-  //   }
-
-  //   return this.element;
-  // }
-
-  // removeElement() {
-  //   this.element = null;
-  // }
 }

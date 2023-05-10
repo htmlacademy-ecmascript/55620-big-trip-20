@@ -33,16 +33,4 @@ export default class SortMenu extends AbstractView {
   get template() {
     return createSortMenu();
   }
-
-  // getElement() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.getTemplate());
-  //   }
-
-  //   return this.element;
-  // }
-
-  // removeElement() {
-  //   this.element = null;
-  // }
 }

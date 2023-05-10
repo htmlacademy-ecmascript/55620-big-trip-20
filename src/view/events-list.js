@@ -8,16 +8,4 @@ export default class EventsList extends AbstractView {
   get template() {
     return createEventsList();
   }
-
-  // getElement() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.getTemplate());
-  //   }
-
-  //   return this.element;
-  // }
-
-  // removeElement() {
-  //   this.element = null;
-  // }
 }

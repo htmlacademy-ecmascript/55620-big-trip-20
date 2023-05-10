@@ -1,23 +1,24 @@
 import AbstractView from '../framework/view/abstract-view.js';
-
 import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils';
 
-// import { createElement } from '../render';
 const createOffersList = (arr) => arr.map((item) => `<li class="event__offer">
           <span class="event__offer-title">${item.title}</span>
           +€&nbsp;
           <span class="event__offer-price">${item.price}</span>
         </li>`).join('');
-
 function createEventsItem(point, destinations, offers) {
+  //Destructing data
   const { basePrice, dateFrom, dateTo, isFavorite, destination, type, offers: offersList } = point;
 
+  //Find current Distination & Offers
   const pointDestination = destinations.find((item) => destination === item.id);
   const pointOffers = offers.find((item) => type === item.type);
+
+  //Filter current offers & create list
   const pointOffersList = pointOffers.offers.filter((item) => offersList.includes(+item.id));
   const eventOffersList = createOffersList(pointOffersList);
-  // console.log()
 
+  //Deate-Time function
   const eventDate = humanizeDateMonthDay(dateFrom);
   const hoursMinsFrom = humanizeDateHourMin(dateFrom);
   const hoursMinsTo = humanizeDateHourMin(dateTo);
@@ -61,26 +62,24 @@ export default class EventsItem extends AbstractView {
   #point = null;
   #destinations = null;
   #offers = null;
-  constructor(point, destinations, offers) {
+  #handleEditFormShow = null;
+
+  constructor({ point, destinations, offers, onEditFormShow }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handleEditFormShow = onEditFormShow;
+
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#sowEditForm);
   }
 
   get template() {
     return createEventsItem(this.#point, this.#destinations, this.#offers);
   }
 
-  // getElement() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.getTemplate());
-  //   }
-
-  //   return this.element;
-  // }
-
-  // removeElement() {
-  //   this.element = null;
-  // }
+  #sowEditForm = (evt) => {
+    evt.preventDefault();
+    this.#handleEditFormShow();
+  };
 }

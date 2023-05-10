@@ -1,20 +1,22 @@
-// import { createElement } from '../render';
 import AbstractView from '../framework/view/abstract-view.js';
 
+//Generation point foto
 const createImgList = (arr) => arr.map((item) => `
   <img class="event__photo" src="${item.src}" alt="${item.description}">
   `).join('');
 
+//Generation Option Select
 const createOptionsList = (arr) => arr.map((item) => `<option value="${item.name}"></option>`).join('');
 
+//Generate Event type list
 const createEventList = (arr, type) => arr.map((item) => `<div class="event__type-item">
   <input id="event-type-${item.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}" ${item.type === type ? 'checked' : ''}>
   <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-1">${item.type}</label>
 </div>`).join('');
 
+//Generate Offer checking
 const createOfferSelectors = (arr, base, type, pointID) => arr.map((item) => {
   const isChecked = base.includes(+item.id) ? 'checked' : '';
-  // console.log(item.id)
   return `<div class="event__offer-selector">
               <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
               <label class="event__offer-label" for="event-offer-${pointID}-${item.id}">
@@ -26,16 +28,20 @@ const createOfferSelectors = (arr, base, type, pointID) => arr.map((item) => {
 }).join('');
 
 function createEditItemForm(point, destinations, offers) {
-  // const { basePrice, dateFrom, dateTo, isFavorite, destination, offers: eventOffers, type } = point;
-  const {id: pointID, offers: eventOffers, type } = point;
 
+  //Point Data destructurization
+  const { id: pointID, offers: eventOffers, type } = point;
+
+  //Find current destination & destruct data
   const pointDestination = destinations.find((item) => point.destination === item.id);
-  const {description, pictures } = pointDestination;
-  // const { id, description, name, pictures } = pointDestination;
+  const { description, pictures } = pointDestination;
 
+  //Rendering form structure
   const createEventFotoList = createImgList(pictures);
   const createCityNameList = createOptionsList(destinations);
   const createEventTypeList = createEventList(offers, type);
+
+  //Find & render offers checking list
   const currentOffer = offers.find((item) => item.type === type);
   const { type: curentOfferType, offers: currentOfferArr } = currentOffer;
   const createOffersSelectorList = createOfferSelectors(currentOfferArr, eventOffers, curentOfferType, pointID);
@@ -119,26 +125,24 @@ export default class EditItemForm extends AbstractView {
   #point = null;
   #destinations = null;
   #offers = null;
-  constructor(point, destinations, offers) {
+  #handleFormSubmit = null;
+
+  constructor({ point, destinations, offers, onFormSubmit }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handleFormSubmit = onFormSubmit;
+
+    this.element.querySelector('form.event').addEventListener('submit', this.#editFormSubmit);
   }
 
   get template() {
     return createEditItemForm(this.#point, this.#destinations, this.#offers);
   }
 
-  // getElement() {
-  //   if (!this.element) {
-  //     this.element = createElement(this.getTemplate());
-  //   }
-
-  //   return this.element;
-  // }
-
-  // removeElement() {
-  //   this.element = null;
-  // }
+  #editFormSubmit = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 }
