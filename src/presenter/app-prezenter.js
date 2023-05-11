@@ -6,34 +6,36 @@ import EventsList from '../view/events-list';
 import EventsItem from '../view/events-item';
 //форма редактирования
 import EditItemForm from '../view/edit-item';
-
+//Шаблон для пустого листа
+import EmptyList from '../view/events-empty-list';
 
 export default class AppPresenter {
   #appWrapper = null;
   #pointsModel = null;
   #appComponent = new EventsList();
-  // #itemComponent = new EventsItem();
 
   constructor({ appWrapper, pointModel }) {
     this.#appWrapper = appWrapper;
     this.#pointsModel = pointModel;
   }
 
-
   init() {
+    // const points = [];
     const points = [...this.#pointsModel.getPoints()];
     const destinations = this.#pointsModel.getDestinations();
     const offers = this.#pointsModel.getOffers();
     render(this.#appComponent, this.#appWrapper);
+
+    if (!points.length) {
+      render(new EmptyList(), this.#appComponent.element);
+    }
     for (let i = 0; i < points.length; i++){
       this.#renderPoints(points[i], destinations, offers);
     }
   }
 
   #renderPoints(point, destinations, offers) {
-    // console.log(point, destinations, offers)
 
-    // const itemComponent = new EventsItem(point, destinations, offers);
     const escKeyHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();

@@ -1,5 +1,5 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils';
+import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils/dateUtils';
 
 const createOffersList = (arr) => arr.map((item) => `<li class="event__offer">
           <span class="event__offer-title">${item.title}</span>
