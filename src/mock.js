@@ -1,5 +1,5 @@
 
-import { getRandomInt } from './utils';
+import { getRandomInt } from './utils/commonUtils';
 
 const mockPoints = [
   { id: '01',

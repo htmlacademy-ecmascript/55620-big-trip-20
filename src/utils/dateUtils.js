@@ -7,14 +7,6 @@ const DATE_FORMAT = {
   hoursMins: 'HH:MM',
 };
 
-const getRandomInt = (min, max) => {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
-const getRandomeElem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
 function humanizeDateMonthDay(dueDate) {
   return dueDate ? dayjs(dueDate).format(DATE_FORMAT.monthDay) : '';
 }
@@ -27,14 +19,6 @@ function humanizeDiffTime(startTime, endTime) {
   const end = dayjs(endTime);
   const timeReminds = dayjs.duration(end.diff(start));
 
-  // switch (true) {
-  //   case (timeReminds.$ms > MS_IN_DAY):
-  //     return timeReminds.format('DD[D] HH[H] MM[M]');
-  //   case (timeReminds.$ms >= MS_IN_HOUR):
-  //     return timeReminds.format('HH[H] MM[M]');
-  //   case (timeReminds.$ms < MS_IN_HOUR):
-  //     return timeReminds.format('MM[M]');
-  // }
   const { days, hours, minutes } = timeReminds.$d;
   // console.log(timeReminds);
   switch (true) {
@@ -45,8 +29,6 @@ function humanizeDiffTime(startTime, endTime) {
     case (minutes !== 60):
       return timeReminds.format('mm[M]');
   }
-  // return timeReminds.format('DD[D] HH[H] MM[M]');
-  // return `${days ? `${ days }D` : ''} ${hours ? `${ hours }H` : ''} ${minutes ? `${ minutes }M` : ''}`;
 }
 
-export { getRandomInt, getRandomeElem, humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime };
+export { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime };
