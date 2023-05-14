@@ -40,29 +40,31 @@ export default class AppPresenter {
       if (evt.key === 'Escape') {
         evt.preventDefault();
         replaseFormToPoint();
-        document.removeEventListener('keydown', escKeyHandler);
+        // document.removeEventListener('keydown', escKeyHandler);
       }
     };
     const itemComponent = new EventsItem({
       point, destinations, offers, onEditFormShow: () => {
         replacePointToForm();
-        document.addEventListener('keydown', escKeyHandler);
+        // document.addEventListener('keydown', escKeyHandler);
       }
     });
 
     const pointEditForm = new EditItemForm({
       point, destinations, offers, onFormSubmit: () => {
         replaseFormToPoint();
-        document.removeEventListener('keydown', escKeyHandler);
+        // document.removeEventListener('keydown', escKeyHandler);
       }
     });
 
     function replacePointToForm() {
       replace(pointEditForm, itemComponent);
+      document.addEventListener('keydown', escKeyHandler);
     }
 
     function replaseFormToPoint() {
       replace(itemComponent, pointEditForm);
+      document.removeEventListener('keydown', escKeyHandler);
     }
     render(itemComponent, this.#appComponent.element);
   }
