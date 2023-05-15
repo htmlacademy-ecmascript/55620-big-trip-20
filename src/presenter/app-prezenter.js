@@ -1,4 +1,4 @@
-import {render, replace} from '../framework/render';
+import { render, replace } from '../framework/render';
 
 //ul
 import EventsList from '../view/events-list';
@@ -9,6 +9,8 @@ import EditItemForm from '../view/edit-item';
 //Шаблон для пустого листа
 import EmptyList from '../view/events-empty-list';
 
+//Point presenter
+import PointPresenter from './point-presenter';
 export default class AppPresenter {
   #appWrapper = null;
   #pointsModel = null;
@@ -29,42 +31,56 @@ export default class AppPresenter {
     if (!points.length) {
       render(new EmptyList(), this.#appComponent.element);
     }
-    for (let i = 0; i < points.length; i++){
-      this.#renderPoints(points[i], destinations, offers);
+    const pointPresenter = new PointPresenter({
+      points,
+      destinations,
+      offers,
+      parentList: this.#appComponent,
+    });
+
+    // pointPresenter.init(point);
+    //Отрисовывает, но нормально работает ТОЛЬКО последний
+    for (let i = 0; i < points.length; i++) {
+      pointPresenter.init(points[i]);
+      // this.#renderPoints(points[i], destinations, offers);
     }
   }
 
   #renderPoints(point, destinations, offers) {
-
     const escKeyHandler = (evt) => {
       if (evt.key === 'Escape') {
         evt.preventDefault();
         replaseFormToPoint();
-        document.removeEventListener('keydown', escKeyHandler);
       }
     };
     const itemComponent = new EventsItem({
-      point, destinations, offers, onEditFormShow: () => {
+      point,
+      destinations,
+      offers,
+      onEditFormShow: () => {
         replacePointToForm();
-        document.addEventListener('keydown', escKeyHandler);
-      }
+      },
     });
 
     const pointEditForm = new EditItemForm({
-      point, destinations, offers, onFormSubmit: () => {
+      point,
+      destinations,
+      offers,
+      onFormSubmit: () => {
         replaseFormToPoint();
-        document.removeEventListener('keydown', escKeyHandler);
-      }
+      },
     });
 
     function replacePointToForm() {
       replace(pointEditForm, itemComponent);
+      document.addEventListener('keydown', escKeyHandler);
     }
 
     function replaseFormToPoint() {
       replace(itemComponent, pointEditForm);
+      document.removeEventListener('keydown', escKeyHandler);
     }
+    // console.log(this.#appComponent.element);
     render(itemComponent, this.#appComponent.element);
   }
-
 }

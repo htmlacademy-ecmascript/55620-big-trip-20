@@ -71,14 +71,14 @@ export default class EventsItem extends AbstractView {
     this.#offers = offers;
     this.#handleEditFormShow = onEditFormShow;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#sowEditForm);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#showEditForm);
   }
 
   get template() {
     return createEventsItem(this.#point, this.#destinations, this.#offers);
   }
 
-  #sowEditForm = (evt) => {
+  #showEditForm = (evt) => {
     evt.preventDefault();
     this.#handleEditFormShow();
   };
