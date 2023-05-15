@@ -1,39 +1,66 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractView from "../framework/view/abstract-view.js";
 
 //Generation point foto
-const createImgList = (arr) => arr.map((item) => `
+const createImgList = (arr) =>
+  arr
+    .map(
+      (item) => `
   <img class="event__photo" src="${item.src}" alt="${item.description}">
-  `).join('');
+  `
+    )
+    .join("");
 
 //Generation Option Select
-const createOptionsList = (arr) => arr.map((item) => `<option value="${item.name}"></option>`).join('');
+const createOptionsList = (arr) =>
+  arr.map((item) => `<option value="${item.name}"></option>`).join("");
 
 //Generate Event type list
-const createEventList = (arr, type) => arr.map((item) => `<div class="event__type-item">
-  <input id="event-type-${item.type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.type}" ${item.type === type ? 'checked' : ''}>
-  <label class="event__type-label  event__type-label--${item.type}" for="event-type-${item.type}-1">${item.type}</label>
-</div>`).join('');
+const createEventList = (arr, type) =>
+  arr
+    .map(
+      (item) => `<div class="event__type-item">
+  <input id="event-type-${
+    item.type
+  }-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${
+        item.type
+      }" ${item.type === type ? "checked" : ""}>
+  <label class="event__type-label  event__type-label--${
+    item.type
+  }" for="event-type-${item.type}-1">${item.type}</label>
+</div>`
+    )
+    .join("");
 
 //Generate Offer checking
-const createOfferSelectors = (arr, base, type, pointID) => arr.map((item) => {
-  const isChecked = base.includes(+item.id) ? 'checked' : '';
-  return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
-              <label class="event__offer-label" for="event-offer-${pointID}-${item.id}">
+const createOfferSelectors = (arr, base, type, pointID) =>
+  arr
+    .map((item) => {
+      const isChecked = base.includes(+item.id) ? "checked" : "";
+      return `<div class="event__offer-selector">
+              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${
+        item.id
+      }" type="checkbox" name="event-offer-${type}" ${
+        isChecked ? "checked" : ""
+      }>
+              <label class="event__offer-label" for="event-offer-${pointID}-${
+        item.id
+      }">
                 <span class="event__offer-title">${item.title}</span>
                 &plus;&euro;&nbsp;
                 <span class="event__offer-price">${item.price}</span>
               </label>
             </div>`;
-}).join('');
+    })
+    .join("");
 
 function createEditItemForm(point, destinations, offers) {
-
   //Point Data destructurization
   const { id: pointID, offers: eventOffers, type } = point;
 
   //Find current destination & destruct data
-  const pointDestination = destinations.find((item) => point.destination === item.id);
+  const pointDestination = destinations.find(
+    (item) => point.destination === item.id
+  );
   const { description, pictures } = pointDestination;
 
   //Rendering form structure
@@ -44,7 +71,12 @@ function createEditItemForm(point, destinations, offers) {
   //Find & render offers checking list
   const currentOffer = offers.find((item) => item.type === type);
   const { type: curentOfferType, offers: currentOfferArr } = currentOffer;
-  const createOffersSelectorList = createOfferSelectors(currentOfferArr, eventOffers, curentOfferType, pointID);
+  const createOffersSelectorList = createOfferSelectors(
+    currentOfferArr,
+    eventOffers,
+    curentOfferType,
+    pointID
+  );
 
   return `
   <li class="trip-events__item">
@@ -135,9 +167,13 @@ export default class EditItemForm extends AbstractView {
     this.#handleFormSubmit = onFormSubmit;
     this.#handleEditFormShow = onFormSubmit;
 
-    this.element.querySelector('form.event').addEventListener('submit', this.#editFormSubmit);
+    this.element
+      .querySelector("form.event")
+      .addEventListener("submit", this.#editFormSubmit);
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#showEditForm);
+    this.element
+      .querySelector(".event__rollup-btn")
+      .addEventListener("click", this.#showEditForm);
   }
 
   get template() {
@@ -148,7 +184,8 @@ export default class EditItemForm extends AbstractView {
     evt.preventDefault();
     this.#handleFormSubmit();
   };
-   #showEditForm = (evt) => {
+
+  #showEditForm = (evt) => {
     evt.preventDefault();
     this.#handleEditFormShow();
   };

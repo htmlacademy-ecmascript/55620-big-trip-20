@@ -1,21 +1,43 @@
-import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils/dateUtils';
+import AbstractView from "../framework/view/abstract-view.js";
+import {
+  humanizeDateMonthDay,
+  humanizeDateHourMin,
+  humanizeDiffTime,
+} from "../utils/dateUtils";
 
-const createOffersList = (arr) => arr.map((item) => `<li class="event__offer">
+const createOffersList = (arr) =>
+  arr
+    .map(
+      (item) => `<li class="event__offer">
           <span class="event__offer-title">${item.title}</span>
           +€&nbsp;
           <span class="event__offer-price">${item.price}</span>
-        </li>`).join('');
+        </li>`
+    )
+    .join("");
 function createEventsItem(point, destinations, offers) {
   //Destructing data
-  const { basePrice, dateFrom, dateTo, isFavorite, destination, type, offers: offersList } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    isFavorite,
+    destination,
+    type,
+    offers: offersList,
+  } = point;
 
   //Find current Distination & Offers
   const pointDestination = destinations.find((item) => destination === item.id);
-  const pointOffers = offers.find((item) => type === item.type);
+  const pointOffers = offers.find((item) => {
+    // console.log(type);
+    return type === item.type;
+  });
 
   //Filter current offers & create list
-  const pointOffersList = pointOffers.offers.filter((item) => offersList.includes(+item.id));
+  const pointOffersList = pointOffers.offers.filter((item) =>
+    offersList.includes(+item.id)
+  );
   const eventOffersList = createOffersList(pointOffersList);
 
   //Deate-Time function
@@ -46,7 +68,9 @@ function createEventsItem(point, destinations, offers) {
       <ul class="event__selected-offers">
         ${eventOffersList}
       </ul>
-      <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
+      <button class="event__favorite-btn ${
+        isFavorite ? "event__favorite-btn--active" : ""
+      }" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
@@ -71,7 +95,11 @@ export default class EventsItem extends AbstractView {
     this.#offers = offers;
     this.#handleEditFormShow = onEditFormShow;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#showEditForm);
+    this.element
+      .querySelector(".event__rollup-btn")
+      .addEventListener("click", this.#showEditForm);
+
+    // console.log(this.#point);
   }
 
   get template() {
