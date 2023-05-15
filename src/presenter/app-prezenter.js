@@ -1,16 +1,16 @@
-import { render, replace } from "../framework/render";
+import { render, replace } from '../framework/render';
 
 //ul
-import EventsList from "../view/events-list";
+import EventsList from '../view/events-list';
 //li
-import EventsItem from "../view/events-item";
+import EventsItem from '../view/events-item';
 //форма редактирования
-import EditItemForm from "../view/edit-item";
+import EditItemForm from '../view/edit-item';
 //Шаблон для пустого листа
-import EmptyList from "../view/events-empty-list";
+import EmptyList from '../view/events-empty-list';
 
 //Point presenter
-import PointPresenter from "./point-presenter";
+import PointPresenter from './point-presenter';
 export default class AppPresenter {
   #appWrapper = null;
   #pointsModel = null;
@@ -48,7 +48,7 @@ export default class AppPresenter {
 
   #renderPoints(point, destinations, offers) {
     const escKeyHandler = (evt) => {
-      if (evt.key === "Escape") {
+      if (evt.key === 'Escape') {
         evt.preventDefault();
         replaseFormToPoint();
       }
@@ -73,12 +73,12 @@ export default class AppPresenter {
 
     function replacePointToForm() {
       replace(pointEditForm, itemComponent);
-      document.addEventListener("keydown", escKeyHandler);
+      document.addEventListener('keydown', escKeyHandler);
     }
 
     function replaseFormToPoint() {
       replace(itemComponent, pointEditForm);
-      document.removeEventListener("keydown", escKeyHandler);
+      document.removeEventListener('keydown', escKeyHandler);
     }
     // console.log(this.#appComponent.element);
     render(itemComponent, this.#appComponent.element);

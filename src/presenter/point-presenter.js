@@ -1,8 +1,8 @@
-import { render, replace } from "../framework/render";
+import { render, replace } from '../framework/render';
 //li
-import EventsItem from "../view/events-item";
+import EventsItem from '../view/events-item';
 //форма редактирования
-import EditItemForm from "../view/edit-item";
+import EditItemForm from '../view/edit-item';
 
 export default class PointPresenter {
   #points = null;
@@ -23,7 +23,7 @@ export default class PointPresenter {
 
   #renderPoints(point, destinations, offers) {
     this.#escKeyHandler = (evt) => {
-      if (evt.key === "Escape") {
+      if (evt.key === 'Escape') {
         evt.preventDefault();
         this.#replaseFormToPoint();
       }
@@ -51,12 +51,12 @@ export default class PointPresenter {
 
   #replacePointToForm() {
     replace(this.#pointEditForm, this.#itemComponent);
-    document.addEventListener("keydown", this.#escKeyHandler);
+    document.addEventListener('keydown', this.#escKeyHandler);
   }
 
   #replaseFormToPoint() {
     replace(this.#itemComponent, this.#pointEditForm);
-    document.removeEventListener("keydown", this.#escKeyHandler);
+    document.removeEventListener('keydown', this.#escKeyHandler);
   }
 
   init(item) {
