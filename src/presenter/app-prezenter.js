@@ -10,7 +10,7 @@ import EditItemForm from '../view/edit-item';
 import EmptyList from '../view/events-empty-list';
 
 //Point presenter
-// import PointPresenter from './point-presenter';
+import PointPresenter from './point-presenter';
 export default class AppPresenter {
   #appWrapper = null;
   #pointsModel = null;
@@ -31,18 +31,18 @@ export default class AppPresenter {
     if (!points.length) {
       render(new EmptyList(), this.#appComponent.element);
     }
-    // const pointPresenter = new PointPresenter({
-    //   points,
-    //   destinations,
-    //   offers,
-    //   parentList: this.#appComponent,
-    // });
+    const pointPresenter = new PointPresenter({
+      points,
+      destinations,
+      offers,
+      parentList: this.#appComponent,
+    });
 
     // pointPresenter.init(point);
     //Отрисовывает, но нормально работает ТОЛЬКО последний элемент.
     for (let i = 0; i < points.length; i++) {
-      // pointPresenter.init(points[i]);
-      this.#renderPoints(points[i], destinations, offers);
+      pointPresenter.init(points[i]);
+      // this.#renderPoints(points[i], destinations, offers);
     }
   }
 
