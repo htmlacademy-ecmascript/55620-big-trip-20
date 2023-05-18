@@ -1,4 +1,4 @@
-import { render, replace } from '../framework/render';
+import { remove, render, replace } from '../framework/render';
 //li
 import EventsItem from '../view/events-item';
 //форма редактирования
@@ -12,13 +12,15 @@ export default class PointPresenter {
   #pointEditForm = null;
   #escKeyHandler = null;
   #parentList = null;
-  #item = null;
+  #routeItem = null;
+  #handleDataChange = null;
 
-  constructor({ points, destinations, offers, parentList }) {
+  constructor({ points, destinations, offers, parentList, onDataChange }) {
     this.#points = points;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#parentList = parentList;
+    this.#handleDataChange = onDataChange;
   }
 
   #renderPoints(point, destinations, offers) {
@@ -35,6 +37,7 @@ export default class PointPresenter {
       onEditFormShow: () => {
         this.#replacePointToForm();
       },
+      onFavoriteClick: this.#handleFavoriteClick,
     });
 
     this.#pointEditForm = new EditItemForm({
@@ -46,7 +49,7 @@ export default class PointPresenter {
       },
     });
 
-    render(this.#itemComponent, this.#parentList.element);
+    render(this.#itemComponent, this.#parentList);
   }
 
   #replacePointToForm() {
@@ -59,11 +62,26 @@ export default class PointPresenter {
     document.removeEventListener('keydown', this.#escKeyHandler);
   }
 
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#routeItem, isFavorite: !this.#routeItem.isFavorite});
+  };
+
   init(item) {
-    this.#item = item;
-    this.#renderPoints(this.#item, this.#destinations, this.#offers);
-    //   for (let i = 0; i < this.#points.length; i++) {
-    //     this.#renderPoints(this.#points[i], this.#destinations, this.#offers);
-    //   }
+    const prevPointComponent = this.#itemComponent;
+    const prevEditComponent = this.#pointEditForm;
+    this.#routeItem = item;
+    if (prevPointComponent === null, prevEditComponent === null) {
+      this.#renderPoints(item, this.#destinations, this.#offers);
+      return;
+    }
+
+    if (this.#parentList.contains(prevPointComponent.element)) {
+      replace(this.#itemComponent, prevPointComponent);
+    }
+    if (this.#parentList.contains(prevEditComponent.element)) {
+      replace(this.#pointEditForm, prevEditComponent);
+    }
+    remove(prevPointComponent);
+    remove(prevEditComponent);
   }
 }
