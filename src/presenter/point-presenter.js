@@ -1,87 +1,84 @@
-import { remove, render, replace } from '../framework/render';
-//li
-import EventsItem from '../view/events-item';
-//форма редактирования
+import { render, replace, remove } from '../framework/render';
+import EventsItemView from '../view/events-item-view';
 import EditItemForm from '../view/edit-item';
 
 export default class PointPresenter {
-  #points = null;
+  #pointContainer = null;
+  #point = null;
   #destinations = null;
   #offers = null;
-  #itemComponent = null;
-  #pointEditForm = null;
-  #escKeyHandler = null;
-  #parentList = null;
-  #routeItem = null;
+  #editComponent = null;
+  #pointComponent = null;
   #handleDataChange = null;
 
-  constructor({ points, destinations, offers, parentList, onDataChange }) {
-    this.#points = points;
-    this.#destinations = destinations;
-    this.#offers = offers;
-    this.#parentList = parentList;
+  constructor({pointContainer, onDataChange}) {
+    this.#pointContainer = pointContainer;
     this.#handleDataChange = onDataChange;
   }
 
-  #renderPoints(point, destinations, offers) {
-    this.#escKeyHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        this.#replaseFormToPoint();
-      }
-    };
-    this.#itemComponent = new EventsItem({
-      point,
-      destinations,
-      offers,
-      onEditFormShow: () => {
-        this.#replacePointToForm();
-      },
-      onFavoriteClick: this.#handleFavoriteClick,
+  init(point, destinations, offers) {
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#offers = offers;
+
+    const prevPointComponent = this.#pointComponent;
+    const prevEditComponent = this.#editComponent;
+
+    this.#pointComponent = new EventsItemView({
+      point: this.#point,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      onEditClick: this.#replaceCardToForm,
+      onFavoriteClick: this.#handleFavoriteClick
+    });
+    this.#editComponent = new EditItemForm({
+      point: this.#point,
+      destinations: this.#destinations,
+      offers: this.#offers,
+      onFormSubmit: this.#replaceFormToCard,
+      onEditClick: this.#replaceFormToCard
     });
 
-    this.#pointEditForm = new EditItemForm({
-      point,
-      destinations,
-      offers,
-      onFormSubmit: () => {
-        this.#replaseFormToPoint();
-      },
-    });
-
-    render(this.#itemComponent, this.#parentList);
-  }
-
-  #replacePointToForm() {
-    replace(this.#pointEditForm, this.#itemComponent);
-    document.addEventListener('keydown', this.#escKeyHandler);
-  }
-
-  #replaseFormToPoint() {
-    replace(this.#itemComponent, this.#pointEditForm);
-    document.removeEventListener('keydown', this.#escKeyHandler);
-  }
-
-  #handleFavoriteClick = () => {
-    this.#handleDataChange({...this.#routeItem, isFavorite: !this.#routeItem.isFavorite});
-  };
-
-  init(item) {
-    const prevPointComponent = this.#itemComponent;
-    const prevEditComponent = this.#pointEditForm;
-    this.#routeItem = item;
-    if (prevPointComponent === null, prevEditComponent === null) {
-      this.#renderPoints(item, this.#destinations, this.#offers);
+    if (prevPointComponent === null || prevEditComponent === null) {
+      render(this.#pointComponent, this.#pointContainer.element);
       return;
     }
 
-    if (this.#parentList.contains(prevPointComponent.element)) {
-      replace(this.#itemComponent, prevPointComponent);
+    if (this.#pointContainer.contains(prevPointComponent.element)) {
+      replace(this.#pointComponent, prevPointComponent);
     }
-    if (this.#parentList.contains(prevEditComponent.element)) {
-      replace(this.#pointEditForm, prevEditComponent);
+    if (this.#pointContainer.contains(prevEditComponent.element)) {
+      replace(this.#editComponent, prevEditComponent);
     }
     remove(prevPointComponent);
     remove(prevEditComponent);
   }
+
+  destroy() {
+    remove(this.#pointComponent);
+    remove(this.#editComponent);
+  }
+
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      this.#replaceFormToCard();
+      document.removeEventListener('keydown', this.#escKeyDownHandler);
+    }
+  };
+
+
+  #replaceCardToForm = () => {
+    replace(this.#editComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #replaceFormToCard = () => {
+    replace(this.#pointComponent, this.#editComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
+  };
+
+  #handleFavoriteClick = () => {
+    this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
 }

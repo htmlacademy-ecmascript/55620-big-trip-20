@@ -9,7 +9,6 @@ const FilterType = {
   PAST: 'past',
 };
 
-
 function isFuture(date) {
   return dayjs().isBefore(dayjs(date), 'D');
 }
@@ -27,17 +26,18 @@ function sortByDate(dateOne, dateTwo) {
 }
 
 const filter = {
+  // [FilterType.EVERYTHING]: (points) => points,
   [FilterType.EVERYTHING]: (points) => points.sort((a, b) => sortByDate(a.dateFrom - b.dateFrom)),
   [FilterType.PAST]: (points) => points.filter((item) => isPast(item.dateFrom)),
   [FilterType.PRESENT]: (points) => points.filter((item) => isPresent(item.dateFrom)),
   [FilterType.FUTURE]: (points) => points.filter((item) => isFuture(item.dateFrom)),
 };
 
-function generateFilter(waypoints) {
+function generateFilter(pointData) {
   return Object.entries(filter).map(
-    ([filterType, filterWaypoints]) => ({
+    ([filterType, filterPoints]) => ({
       type: filterType,
-      count: filterWaypoints(waypoints).length,
+      count: filterPoints(pointData).length,
     }),
   );
 }
