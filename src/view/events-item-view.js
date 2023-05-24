@@ -2,13 +2,15 @@ import AbstractView from '../framework/view/abstract-view.js';
 import { humanizeDateMonthDay, humanizeDateHourMin, humanizeDiffTime } from '../utils/dateUtils';
 
 const createOffersList = (arr) => arr.map((item) => `<li class="event__offer">
-          <span class="event__offer-title">${item.title}</span>
-          +€&nbsp;
-          <span class="event__offer-price">${item.price}</span>
-        </li>`).join('');
-function createEventsItem(point, destinations, offers) {
+    <span class="event__offer-title">${item.title}</span>
+    +€&nbsp;
+    <span class="event__offer-price">${item.price}</span>
+  </li>`).join('');
+
+function createEventsItemView(point, destinations, offers) {
   //Destructing data
   const { basePrice, dateFrom, dateTo, isFavorite, destination, type, offers: offersList } = point;
+
   //Find current Distination & Offers
   const pointDestination = destinations.find((item) => destination === item.id);
   const pointOffers = offers.find((item) => type === item.type);
@@ -45,7 +47,7 @@ function createEventsItem(point, destinations, offers) {
       <ul class="event__selected-offers">
         ${eventOffersList}
       </ul>
-      <button class="event__favorite-btn ${ isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
+      <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
         <span class="visually-hidden">Add to favorite</span>
         <svg class="event__favorite-icon" width="28" height="28" viewBox="0 0 28 28">
           <path d="M14 21l-8.22899 4.3262 1.57159-9.1631L.685209 9.67376 9.8855 8.33688 14 0l4.1145 8.33688 9.2003 1.33688-6.6574 6.48934 1.5716 9.1631L14 21z"></path>
@@ -57,38 +59,37 @@ function createEventsItem(point, destinations, offers) {
     </div>
   </li>`;
 }
-export default class EventsItem extends AbstractView {
+export default class EventsItemView extends AbstractView {
   #point = null;
   #destinations = null;
   #offers = null;
-  #handleEditFormShow = null;
-  #onFavoriteClick = null;
+  #handelEditClick = null;
+  #handleFavoriteClick = null;
 
-  constructor({ point, destinations, offers, onEditFormShow, onFavoriteClick }) {
+  constructor({ point, destinations, offers, onEditClick, onFavoriteClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
-    this.#handleEditFormShow = onEditFormShow;
-    this.#onFavoriteClick = onFavoriteClick;
+    this.#handelEditClick = onEditClick;
+    this.#handleFavoriteClick = onFavoriteClick;
 
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#showEditForm);
-
-    this.element.querySelector('.event__favorite-btn')
-      .addEventListener('click', this.#favoriteClickHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    this.element.querySelector('.event__favorite-btn').addEventListener('click', this.#favoriteClickHandler);
   }
 
   get template() {
-    return createEventsItem(this.#point, this.#destinations, this.#offers);
+    return createEventsItemView(this.#point, this.#destinations, this.#offers);
   }
 
-  #showEditForm = (evt) => {
+  #editClickHandler = (evt) => {
     evt.preventDefault();
-    this.#handleEditFormShow();
+    this.#handelEditClick();
   };
 
   #favoriteClickHandler = (evt) => {
     evt.preventDefault();
-    this.#onFavoriteClick();
+    this.#handleFavoriteClick();
   };
+
 }

@@ -1,24 +1,21 @@
 import { RenderPosition, render } from './framework/render';
 import TripInfo from './view/trip-info';
-import FilterMenu from './view/filteres';
-import SortMenu from './view/sorting';
-import AppPresenter from './presenter/app-prezenter';
 import PointModel from './model/model';
-import { generateFilter } from './utils/filterUtils';
+import AppPresenter from './presenter/app-presenter';
+import HeaderPresenter from './presenter/header-presenter';
 
 const tripInfoContainer = document.querySelector('.trip-main');
 const tripFiltersContainer = document.querySelector('.trip-controls__filters');
 const tripEventsContainer = document.querySelector('.trip-events');
+
 const pointModel = new PointModel();
+const appPresenter = new AppPresenter({ pointsContainer: tripEventsContainer, pointModel });
 
-const filterData = generateFilter(pointModel.points);
-
-const appPresenter = new AppPresenter({ appWrapper: tripEventsContainer, pointModel });
+const filterData = pointModel.getPoints();
+const headPresenter = new HeaderPresenter({filterContainer: tripFiltersContainer, tripSortContainer: tripEventsContainer, pointData: filterData});
 
 
 render(new TripInfo(), tripInfoContainer, RenderPosition.AFTERBEGIN);
-render(new FilterMenu({filterData}), tripFiltersContainer);
-render(new SortMenu(), tripEventsContainer);
-
 
 appPresenter.init();
+headPresenter.init();

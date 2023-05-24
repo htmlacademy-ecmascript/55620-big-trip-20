@@ -8,4 +8,6 @@ const getRandomeElem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 const capitalize = (str) => (str[0].toUpperCase() + str.slice(1));
 
-export { getRandomInt, getRandomeElem, capitalize };
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+export { getRandomInt, getRandomeElem, capitalize, updateItem };

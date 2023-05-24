@@ -18,13 +18,13 @@ const createEventList = (arr, type) => arr.map((item) => `<div class="event__typ
 const createOfferSelectors = (arr, base, type, pointID) => arr.map((item) => {
   const isChecked = base.includes(+item.id) ? 'checked' : '';
   return `<div class="event__offer-selector">
-              <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
-              <label class="event__offer-label" for="event-offer-${pointID}-${item.id}">
-                <span class="event__offer-title">${item.title}</span>
-                &plus;&euro;&nbsp;
-                <span class="event__offer-price">${item.price}</span>
-              </label>
-            </div>`;
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${pointID}-${item.id}" type="checkbox" name="event-offer-${type}" ${isChecked ? 'checked' : ''}>
+    <label class="event__offer-label" for="event-offer-${pointID}-${item.id}">
+      <span class="event__offer-title">${item.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${item.price}</span>
+    </label>
+  </div>`;
 }).join('');
 
 function createEditItemForm(point, destinations, offers) {
@@ -126,23 +126,31 @@ export default class EditItemForm extends AbstractView {
   #destinations = null;
   #offers = null;
   #handleFormSubmit = null;
+  #handelEditClick = null;
 
-  constructor({ point, destinations, offers, onFormSubmit }) {
+  constructor({ point, destinations, offers, onFormSubmit, onEditClick }) {
     super();
     this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
+    this.#handelEditClick = onEditClick;
     this.#handleFormSubmit = onFormSubmit;
 
-    this.element.querySelector('form.event').addEventListener('submit', this.#editFormSubmit);
+    this.element.querySelector('form.event').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
   get template() {
     return createEditItemForm(this.#point, this.#destinations, this.#offers);
   }
 
-  #editFormSubmit = (evt) => {
+  #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit(this.#point);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handelEditClick();
   };
 }
