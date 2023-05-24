@@ -46,17 +46,21 @@ export default class AppPresenter {
   #renderPoint(point, destinations, offers) {
     const pointPresenter = new PointPresenter({
       pointContainer: this.#appComponent,
-      onDataChange: this.#handlePointChange
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange,
     });
 
     pointPresenter.init(point, destinations, offers);
     this.#pointsPresenters.set(point.id, pointPresenter);
-    // console.log(this.#pointsPresenters);
   }
 
   #handlePointChange = (updatePoint) => {
     this.#points = updateItem(this.#points, updatePoint);
     this.#pointsPresenters.get(updatePoint.id).init(updatePoint, this.#destinations, this.#offers);
+  };
+
+  #handleModeChange = () => {
+    this.#pointsPresenters.forEach((presenter) => presenter.resetView());
   };
 
   #clearPointList() {

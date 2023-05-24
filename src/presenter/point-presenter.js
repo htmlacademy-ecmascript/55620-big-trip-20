@@ -2,6 +2,11 @@ import { render, replace, remove } from '../framework/render';
 import EventsItemView from '../view/events-item-view';
 import EditItemForm from '../view/edit-item';
 
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 export default class PointPresenter {
   #pointContainer = null;
   #point = null;
@@ -10,10 +15,13 @@ export default class PointPresenter {
   #editComponent = null;
   #pointComponent = null;
   #handleDataChange = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
 
-  constructor({pointContainer, onDataChange}) {
+  constructor({pointContainer, onDataChange, onModeChange}) {
     this.#pointContainer = pointContainer;
     this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
   }
 
   init(point, destinations, offers) {
@@ -36,7 +44,6 @@ export default class PointPresenter {
       destinations: this.#destinations,
       offers: this.#offers,
       onFormSubmit: this.#handleFormSubmit,
-      // onFormSubmit: this.#replaceFormToCard,
       onEditClick: this.#replaceFormToCard
     });
 
@@ -45,11 +52,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointContainer.element.contains(prevPointComponent.element)) {
+    if (this.#mode === Mode.DEFAULT){
       replace(this.#pointComponent, prevPointComponent);
       return;
     }
-    if (this.#pointContainer.element.contains(prevEditComponent.element)) {
+    if (this.#mode === Mode.EDITING) {
       replace(this.#editComponent, prevEditComponent);
       return;
     }
@@ -60,6 +67,12 @@ export default class PointPresenter {
   destroy() {
     remove(this.#pointComponent);
     remove(this.#editComponent);
+  }
+
+  resetView() {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToCard();
+    }
   }
 
   #escKeyDownHandler = (evt) => {
@@ -74,11 +87,15 @@ export default class PointPresenter {
   #replaceCardToForm = () => {
     replace(this.#editComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+
   };
 
   #replaceFormToCard = () => {
     replace(this.#pointComponent, this.#editComponent);
     document.removeEventListener('keydown', this.#escKeyDownHandler);
+    this.#mode = Mode.DEFAULT;
   };
 
   #handleFavoriteClick = () => {
@@ -86,7 +103,6 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    console.log(point);
     this.#handleDataChange(point);
     this.#replaceFormToCard();
   };
