@@ -35,7 +35,8 @@ export default class PointPresenter {
       point: this.#point,
       destinations: this.#destinations,
       offers: this.#offers,
-      onFormSubmit: this.#replaceFormToCard,
+      onFormSubmit: this.#handleFormSubmit,
+      // onFormSubmit: this.#replaceFormToCard,
       onEditClick: this.#replaceFormToCard
     });
 
@@ -44,11 +45,11 @@ export default class PointPresenter {
       return;
     }
 
-    if (this.#pointContainer.contains(prevPointComponent.element)) {
+    if (this.#pointContainer.element.contains(prevPointComponent.element)) {
       replace(this.#pointComponent, prevPointComponent);
       return;
     }
-    if (this.#pointContainer.contains(prevEditComponent.element)) {
+    if (this.#pointContainer.element.contains(prevEditComponent.element)) {
       replace(this.#editComponent, prevEditComponent);
       return;
     }
@@ -82,5 +83,11 @@ export default class PointPresenter {
 
   #handleFavoriteClick = () => {
     this.#handleDataChange({...this.#point, isFavorite: !this.#point.isFavorite});
+  };
+
+  #handleFormSubmit = (point) => {
+    console.log(point);
+    this.#handleDataChange(point);
+    this.#replaceFormToCard();
   };
 }
