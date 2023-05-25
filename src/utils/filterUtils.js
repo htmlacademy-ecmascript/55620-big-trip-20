@@ -42,4 +42,26 @@ function generateFilter(pointData) {
   );
 }
 
-export {generateFilter, filter };
+/* SORT */
+
+const SortType = {
+  DAY: 'sort-day',
+  EVENT: 'sort-event',
+  TIME: 'sort-time',
+  PRICE: 'sort-price',
+  OFFER: 'sort-offer'
+};
+
+function durationTrip(point) {
+  return dayjs(point.dateTo).diff(dayjs(point.dateFrom));
+}
+
+function sortByTime(points) {
+  return points.sort((a, b) => durationTrip(b) - durationTrip(a));
+}
+
+function sortByPrice(points) {
+  return points.sort((a, b) => b.basePrice - a.basePrice);
+}
+
+export {generateFilter, filter, SortType, sortByTime, sortByPrice};
