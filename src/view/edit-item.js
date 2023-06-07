@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 
 //Generation point foto
 const createImgList = (arr) => arr.map((item) => `
@@ -67,7 +67,7 @@ function createEditItemForm(point, destinations, offers) {
         </div>
 
         <div class="event__field-group  event__field-group--destination">
-          <label class="event__label  event__type-output" for="event-destination-1">
+          <label class="event__label event__type-output" for="event-destination-1">
             ${type}
           </label>
           <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="Chamonix" list="destination-list-1">
@@ -121,8 +121,8 @@ function createEditItemForm(point, destinations, offers) {
   </li>`;
 }
 
-export default class EditItemForm extends AbstractView {
-  #point = null;
+export default class EditItemForm extends AbstractStatefulView {
+  // #point = null;
   #destinations = null;
   #offers = null;
   #handleFormSubmit = null;
@@ -130,27 +130,89 @@ export default class EditItemForm extends AbstractView {
 
   constructor({ point, destinations, offers, onFormSubmit, onEditClick }) {
     super();
-    this.#point = point;
+    this._setState(EditItemForm.parseTripToState(point));
+    // this.#point = point;
     this.#destinations = destinations;
     this.#offers = offers;
     this.#handelEditClick = onEditClick;
     this.#handleFormSubmit = onFormSubmit;
+    this._restoreHandlers();
 
-    this.element.querySelector('form.event').addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
   }
 
   get template() {
-    return createEditItemForm(this.#point, this.#destinations, this.#offers);
+    return createEditItemForm(this._state, this.#destinations, this.#offers);
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit(this.#point);
+    this.#handleFormSubmit(EditItemForm.parseStateToTrip(this._state));
+    // this.#handleFormSubmit(this.#point);
   };
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this.#handelEditClick();
   };
+
+  #clickHandlerType = (evt) => {
+    evt.preventDefault();
+    this.updateElement({
+
+      type: evt.target.value,
+      offers: []
+
+    });
+
+  };
+
+  #changeHandlerDestination = (evt) => {
+    evt.preventDefault();
+    const selectedDestination = this.#destinations.find((tripDest) => tripDest.name === evt.target.value);
+    this.updateElement({
+      destination: selectedDestination.id
+    });
+  };
+
+  #changeHandlerOffer = (evt) => {
+    evt.preventDefault();
+    const checkedBoxed = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+    this._setState({
+      offers: checkedBoxed.map((el) => el.id)
+    });
+  };
+
+  #changeHandlerPrice = (evt) => {
+    evt.preventDefault();
+    this._setState({
+      basePrice: evt.target.value
+    });
+
+  };
+
+  static parseTripToState(point) {
+    return {
+      ...point
+    };
+  }
+
+  static parseStateToTrip (state) {
+    return state;
+  }
+
+  reset = (point) => {
+    this.updateElement(EditItemForm.parseTripToState(point));
+  };
+
+
+  _restoreHandlers() {
+    this.element.querySelector('form.event').addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+
+    this.element.querySelector('.event__type-group').addEventListener('change', this.#clickHandlerType);
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#changeHandlerDestination);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#changeHandlerOffer);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#changeHandlerPrice);
+  }
+
 }
